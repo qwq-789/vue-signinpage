@@ -105,7 +105,8 @@
               placeholder="請再次輸入密碼"
               v-model="uprepass"
               required
-              :class="isrepeat"
+              :class="{ 'border-[2px]': isrepeat, 'border-red-700': isrepeat }"
+              @blur="atblur"
               class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
             />
             <div @click="showpassword($event, 3)" class="w-[20px]">
@@ -169,10 +170,15 @@ export default {
     const cansee = ref("password");
     const cansee2 = ref("password");
     const cansee3 = ref("password");
-    const isrepeat = ref("");
-    if (uprepass.value !== uppass.value) {
-      isrepeat.value = "border-2 border-red-900";
-    }
+    const isrepeat = ref(false);
+
+    const atblur = function () {
+      if (uppass.value !== uprepass.value) {
+        isrepeat.value = true;
+      } else {
+        isrepeat.value = false;
+      }
+    };
 
     const showpassword = function (event, i) {
       if (event.target.tagName == "path") {
@@ -253,6 +259,7 @@ export default {
       cansee2,
       cansee3,
       isrepeat,
+      atblur,
       showpassword,
       signin,
       signup,
