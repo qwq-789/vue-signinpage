@@ -41,7 +41,7 @@
               required
               class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
             />
-            <div @click="showpassword($event)" class="w-[20px]">
+            <div @click="showpassword($event, 1)" class="w-[20px]">
               <i
                 class="fa-solid fa-eye absolute top-[14px] right-[8px] cursor-pointer text-gray-400 hover:text-gray-600"
               ></i>
@@ -77,34 +77,55 @@
         class="flex w-full flex-col items-center space-y-4 bg-white"
       >
         <p class="text-3xl">註冊</p>
-        <form class="flex flex-col space-y-4">
+        <form @submit.prevent="signup" class="flex flex-col space-y-4">
           <input
             type="text"
             placeholder="請輸入帳號"
+            v-model="upacc"
             required
             class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
           />
-          <input
-            type="password"
-            placeholder="請輸入密碼"
-            required
-            class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
-          />
-          <input
-            type="password"
-            placeholder="請重複輸入密碼"
-            required
-            class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
-          />
+          <div class="relative">
+            <input
+              :type="cansee2"
+              placeholder="請輸入密碼"
+              v-model="uppass"
+              required
+              class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
+            />
+            <div @click="showpassword($event, 2)" class="w-[20px]">
+              <i
+                class="fa-solid fa-eye absolute top-[14px] right-[8px] cursor-pointer text-gray-400 hover:text-gray-600"
+              ></i>
+            </div>
+          </div>
+          <div class="relative">
+            <input
+              :type="cansee3"
+              placeholder="請再次輸入密碼"
+              v-model="uprepass"
+              required
+              :class="isrepeat"
+              class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
+            />
+            <div @click="showpassword($event, 3)" class="w-[20px]">
+              <i
+                class="fa-solid fa-eye absolute top-[14px] right-[8px] cursor-pointer text-gray-400 hover:text-gray-600"
+              ></i>
+            </div>
+          </div>
+
           <input
             type="text"
             placeholder="請輸入真實姓名"
+            v-model="upname"
             required
             class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
           />
           <input
             type="email"
             placeholder="請輸入電子信箱"
+            v-model="upmail"
             required
             class="w-[50vw] rounded-md border-[1px] border-gray-400 p-2"
           />
@@ -140,16 +161,44 @@ export default {
   setup() {
     const acc = ref("");
     const pass = ref("");
+    const upacc = ref("");
+    const uppass = ref("");
+    const uprepass = ref("");
+    const upname = ref("");
+    const upmail = ref("");
     const cansee = ref("password");
-    const showpassword = function (event) {
+    const cansee2 = ref("password");
+    const cansee3 = ref("password");
+    const isrepeat = ref("");
+    if (uprepass.value !== uppass.value) {
+      isrepeat.value = "border-2 border-red-900";
+    }
+
+    const showpassword = function (event, i) {
       if (event.target.tagName == "path") {
         event.target.parentNode.classList.toggle("fa-eye");
         event.target.parentNode.classList.toggle("fa-eye-slash");
       }
-      if (cansee.value == "password") {
-        cansee.value = "text";
-      } else {
-        cansee.value = "password";
+      if (i == "1") {
+        if (cansee.value == "password") {
+          cansee.value = "text";
+        } else {
+          cansee.value = "password";
+        }
+      }
+      if (i == "2") {
+        if (cansee2.value == "password") {
+          cansee2.value = "text";
+        } else {
+          cansee2.value = "password";
+        }
+      }
+      if (i == "3") {
+        if (cansee3.value == "password") {
+          cansee3.value = "text";
+        } else {
+          cansee3.value = "password";
+        }
       }
       event.target.classList.toggle("fa-eye");
       event.target.classList.toggle("fa-eye-slash");
@@ -158,6 +207,29 @@ export default {
       alert("帳號:" + acc.value + "\n" + "密碼:" + pass.value);
       acc.value = "";
       pass.value = "";
+    };
+    const signup = function () {
+      alert(
+        "帳號:" +
+          upacc.value +
+          "\n" +
+          "密碼:" +
+          uppass.value +
+          "\n" +
+          "重複密碼:" +
+          uprepass.value +
+          "\n" +
+          "姓名:" +
+          upname.value +
+          "\n" +
+          "信箱:" +
+          upmail.value
+      );
+      upacc.value = "";
+      uppass.value = "";
+      uprepass.value = "";
+      upname.value = "";
+      upmail.value = "";
     };
     const OnInPage = ref("y");
     const OnUpPage = ref("");
@@ -172,9 +244,18 @@ export default {
     return {
       acc,
       pass,
+      upacc,
+      uppass,
+      uprepass,
+      upname,
+      upmail,
       cansee,
+      cansee2,
+      cansee3,
+      isrepeat,
       showpassword,
       signin,
+      signup,
       OnInPage,
       OnUpPage,
       swToSignup,
